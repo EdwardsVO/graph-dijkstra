@@ -2,12 +2,11 @@ import networkx as nx
 import matplotlib.pyplot as plt
 
 
-
 class Graph:
     graph = nx.Graph()
     streets = [55, 54, 53, 52, 51, 50]
     avenues = [15, 14, 13, 12, 11, 10]
-    destinies = ['5410', '5014', '5012', '5213', '5414']
+    destinies = ['5411', '5014', '5012', '5213', '5414']
     path = []
     andreina_path = []
     javier_path = []
@@ -60,7 +59,7 @@ class Graph:
     def show_graph(self):
         # Dibujar nodos en específico
         color_map = []
-        
+
         for node in self.graph.nodes():
             if node in self.destinies:
                 if node == '5414':
@@ -69,13 +68,13 @@ class Graph:
                     color_map.append(('#f1785e'))
                 if node == '5014':
                     color_map.append(('#be76ce'))
-                if node == '5410':
+                if node == '5411':
                     color_map.append(('#d88a02'))
                 if node == '5012':
                     color_map.append(('#77a506'))
             else:
                 color_map.append(('#a6cfcc'))
-        
+
         # Obtener la posición en pantalla de los nodos
         pos = nx.get_node_attributes(self.graph, 'pos')
         # Obtener las aristas del grafo
@@ -129,10 +128,10 @@ class Graph:
                     minimum_node = node
 
             for edge in non_visited_nodes.edges(minimum_node):
-                if(self.graph.nodes[edge[1]] not in self.path):
+                if (self.graph.nodes[edge[1]] not in self.path):
                     if self.graph.nodes[edge[1]][person + 'Distance'] > self.graph.nodes[minimum_node][person + 'Distance'] + self.graph.edges[edge]['weight']:
                         self.graph.nodes[edge[1]][person + 'Distance'] = self.graph.nodes[minimum_node][person +
-                                                                                                        'Distance'] + self.graph.edges[edge]['weight'] + (2 if(person == 'Andreina') else 0)
+                                                                                                        'Distance'] + self.graph.edges[edge]['weight'] + (2 if (person == 'Andreina') else 0)
                         previous_node[edge[1]] = minimum_node
             non_visited_nodes.remove_node(minimum_node)
 
@@ -152,10 +151,10 @@ class Graph:
         distance['Distance'] = self.graph.nodes[destination_node][person + 'Distance']
         distance['Path'] = shortest_path
         self.path = shortest_path
-        if(person == "Andreina"): 
+        if (person == "Andreina"):
             self.andreina_path = shortest_path
             self.andreina_time = distance['Distance']
-        if(person == "Javier"): 
+        if (person == "Javier"):
             self.javier_path = shortest_path
             self.javier_time = distance['Distance']
         return distance
@@ -172,13 +171,13 @@ class Graph:
                     color_map.append(('#f1785e'))
                 if node == '5014':
                     color_map.append(('#be76ce'))
-                if node == '5410':
+                if node == '5411':
                     color_map.append(('#d88a02'))
                 if node == '5012':
                     color_map.append(('#77a506'))
             else:
                 color_map.append(('#a6cfcc'))
-        
+
         auxiliar_graph_javier = nx.subgraph(self.graph, self.javier_path)
         auxiliar_graph_andreina = nx.subgraph(self.graph, self.andreina_path)
 
@@ -191,18 +190,17 @@ class Graph:
             except KeyError:
                 auxiliar_edge_javier = None
 
-            try: 
+            try:
                 auxiliar_edge_andreina = auxiliar_graph_andreina.edges[edge]
             except KeyError:
                 auxiliar_edge_andreina = None
 
-            if(auxiliar_edge_javier != None):
+            if (auxiliar_edge_javier != None):
                 color_edges.append(('#0ea2ea'))
-            elif(auxiliar_edge_andreina != None):
+            elif (auxiliar_edge_andreina != None):
                 color_edges.append(('#f1785e'))
             else:
                 color_edges.append(('#a6cfcc'))
-
 
         # Obtener la posición en pantalla de los nodos
         pos = nx.get_node_attributes(self.graph, 'pos')
@@ -219,3 +217,18 @@ class Graph:
             self.graph, pos, font_size=6, font_family='sans-serif')
         plt.axis('off')
         plt.show()
+
+    def shortest_distance(self, javier, andreina):
+        '''Comparar los tiempos de los dos caminos y retornar un str
+        con la persona que deba esperar x minutos para salir'''
+
+        aux = javier['Distance'] - andreina['Distance']
+        if (aux < 0):
+            aux = aux * -1
+            text = '      Javier debe esperar:\n' + \
+                str(aux) + ' minutos para salir'
+            return text
+        else:
+            text = 'Andreina  debe esperar: \n' + \
+                str(aux) + ' minutos para salir'
+            return text
