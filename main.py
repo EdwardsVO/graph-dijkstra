@@ -50,7 +50,7 @@ def main():
                 javier, andreina)).place(x=10, y=150)
             tkinter.Label(window, text='Tiempo de viaje: \n'+'Javier -> '+str(javier['Distance'])+' Minutos\n'
                           + 'Andreina -> '+str(andreina['Distance'])+' Minutos').place(x=180, y=140)
-        else:
+        elif option.get() == 'Cerveceria Mi Rolita (5012)':
             graph.setup_dijkstra()
             javier = graph.run_dijkstra('5414', '5012', 'Javier')
             andreina = graph.run_dijkstra('5213', '5012', 'Andreina')
